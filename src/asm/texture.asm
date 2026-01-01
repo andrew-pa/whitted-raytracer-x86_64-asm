@@ -13,6 +13,8 @@ texture_sample:
     mov rbp, rsp
     sub rsp, 16
 
+    mov r8, rdx
+
     mov eax, dword [rdi + MAT_TEX_TYPE]
     cmp eax, TEX_CHECKER
     je .checker
@@ -21,11 +23,11 @@ texture_sample:
 
 .solid:
     movsd xmm0, [rdi + MAT_TEX_COLOR1 + VEC3_X]
-    movsd [rdx + VEC3_X], xmm0
+    movsd [r8 + VEC3_X], xmm0
     movsd xmm0, [rdi + MAT_TEX_COLOR1 + VEC3_Y]
-    movsd [rdx + VEC3_Y], xmm0
+    movsd [r8 + VEC3_Y], xmm0
     movsd xmm0, [rdi + MAT_TEX_COLOR1 + VEC3_Z]
-    movsd [rdx + VEC3_Z], xmm0
+    movsd [r8 + VEC3_Z], xmm0
     leave
     ret
 
@@ -70,20 +72,20 @@ texture_sample:
 
 .use_color1:
     movsd xmm0, [rdi + MAT_TEX_COLOR1 + VEC3_X]
-    movsd [rdx + VEC3_X], xmm0
+    movsd [r8 + VEC3_X], xmm0
     movsd xmm0, [rdi + MAT_TEX_COLOR1 + VEC3_Y]
-    movsd [rdx + VEC3_Y], xmm0
+    movsd [r8 + VEC3_Y], xmm0
     movsd xmm0, [rdi + MAT_TEX_COLOR1 + VEC3_Z]
-    movsd [rdx + VEC3_Z], xmm0
+    movsd [r8 + VEC3_Z], xmm0
     leave
     ret
 
 .use_color2:
     movsd xmm0, [rdi + MAT_TEX_COLOR2 + VEC3_X]
-    movsd [rdx + VEC3_X], xmm0
+    movsd [r8 + VEC3_X], xmm0
     movsd xmm0, [rdi + MAT_TEX_COLOR2 + VEC3_Y]
-    movsd [rdx + VEC3_Y], xmm0
+    movsd [r8 + VEC3_Y], xmm0
     movsd xmm0, [rdi + MAT_TEX_COLOR2 + VEC3_Z]
-    movsd [rdx + VEC3_Z], xmm0
+    movsd [r8 + VEC3_Z], xmm0
     leave
     ret
