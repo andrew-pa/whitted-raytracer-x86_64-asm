@@ -38,6 +38,9 @@ camera_up: resq 3
 global camera_fov
 camera_fov: resq 1
 
+global exposure
+exposure: resq 1
+
 global image_width
 image_width: resd 1
 

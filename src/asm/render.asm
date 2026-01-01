@@ -9,6 +9,7 @@ extern vec3_normalize
 extern vec3_cross
 extern vec3_copy
 extern vec3_clamp01
+extern vec3_tonemap_reinhard
 extern trace_ray
 extern tan
 
@@ -19,6 +20,7 @@ extern camera_fov
 extern cam_forward
 extern cam_right
 extern cam_true_up
+extern exposure
 
 section .rodata
 const_one: dq 1.0
@@ -190,7 +192,12 @@ render_image:
     lea rdx, [rsp + 144]
     call trace_ray
 
-    ; clamp color to [0,1]
+    ; tone map then clamp to [0,1]
+    lea rdi, [rsp + 144]
+    lea rsi, [rsp + 144]
+    movsd xmm0, [rel exposure]
+    call vec3_tonemap_reinhard
+
     lea rdi, [rsp + 144]
     lea rsi, [rsp + 144]
     call vec3_clamp01

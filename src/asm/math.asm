@@ -252,3 +252,28 @@ vec3_cross:
     subsd xmm0, xmm1
     movsd [rdi + VEC3_Z], xmm0
     ret
+
+global vec3_tonemap_reinhard
+vec3_tonemap_reinhard:
+    ; dest = (src * exposure) / (1 + src * exposure)
+    movsd xmm2, [rsi + VEC3_X]
+    mulsd xmm2, xmm0
+    movsd xmm3, [const_one]
+    addsd xmm3, xmm2
+    divsd xmm2, xmm3
+    movsd [rdi + VEC3_X], xmm2
+
+    movsd xmm2, [rsi + VEC3_Y]
+    mulsd xmm2, xmm0
+    movsd xmm3, [const_one]
+    addsd xmm3, xmm2
+    divsd xmm2, xmm3
+    movsd [rdi + VEC3_Y], xmm2
+
+    movsd xmm2, [rsi + VEC3_Z]
+    mulsd xmm2, xmm0
+    movsd xmm3, [const_one]
+    addsd xmm3, xmm2
+    divsd xmm2, xmm3
+    movsd [rdi + VEC3_Z], xmm2
+    ret

@@ -17,6 +17,7 @@ extern camera_pos
 extern camera_lookat
 extern camera_up
 extern camera_fov
+extern exposure
 extern image_width
 extern image_height
 extern max_depth
@@ -34,6 +35,7 @@ kw_camera:     db "camera", 0
 kw_ambient:    db "ambient", 0
 kw_background: db "background", 0
 kw_maxdepth:   db "maxdepth", 0
+kw_exposure:   db "exposure", 0
 kw_material:   db "material", 0
 kw_sphere:     db "sphere", 0
 kw_cube:       db "cube", 0
@@ -55,6 +57,7 @@ const_f1: dq 1.0
 const_fneg5: dq -5.0
 const_f60: dq 60.0
 const_f005: dq 0.05
+const_f12: dq 1.2
 
 section .text
 
@@ -88,6 +91,9 @@ init_scene:
 
     movsd xmm0, [rel const_f60]
     movsd [camera_fov], xmm0
+
+    movsd xmm0, [rel const_f12]
+    movsd [exposure], xmm0
 
     movsd xmm0, [rel const_f005]
     movsd [ambient_color + VEC3_X], xmm0
@@ -179,8 +185,17 @@ parse_scene:
     lea rsi, [rel kw_maxdepth]
     call strcmp
     test eax, eax
-    jne .check_material
+    jne .check_exposure
     call parse_maxdepth
+    jmp .read_loop
+
+.check_exposure:
+    lea rdi, [rel _token_buf]
+    lea rsi, [rel kw_exposure]
+    call strcmp
+    test eax, eax
+    jne .check_material
+    call parse_exposure
     jmp .read_loop
 
 .check_material:
@@ -328,6 +343,20 @@ parse_maxdepth:
     mov rdi, [rdi]
     lea rsi, [rel fmt_int]
     lea rdx, [rel max_depth]
+    xor eax, eax
+    call fscanf
+    leave
+    ret
+
+global parse_exposure
+parse_exposure:
+    push rbp
+    mov rbp, rsp
+    sub rsp, 16
+    lea rdi, [rel stdin]
+    mov rdi, [rdi]
+    lea rsi, [rel fmt_double]
+    lea rdx, [rel exposure]
     xor eax, eax
     call fscanf
     leave
