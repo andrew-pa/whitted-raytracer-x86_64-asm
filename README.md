@@ -1,18 +1,29 @@
 # Whitted Raytracer (x86_64 Assembly)
 
-This project is a minimal Whitted-style raytracer written entirely in x86_64 NASM for Linux. It parses a simple scene description from **stdin** and writes a PNG image to **stdout** using libpng's simplified API.
+A minimal Whitted-style raytracer written in x86_64 NASM for Linux. It reads a
+scene description from **stdin** and writes an 8-bit RGB PNG image to
+**stdout** using libpng's simplified API.
+
+![Sample render](out.png)
+
+The image above (`out.png`) is generated from `scenes/sample.scene`.
 
 ## Features
 
 - Spheres and axis-aligned cubes
 - Point lights with diffuse + specular shading
 - Procedural textures (solid, checker, stripe)
-- Recursive reflections (Whitted)
+- Recursive reflections (Whitted-style)
 - PNG output to stdout
 
-## Build
+## Requirements
 
-Dependencies: `nasm`, `gcc`, `libpng`, `zlib`.
+- Linux x86_64
+- `nasm`
+- `gcc`
+- `libpng` and `zlib` (plus `pkg-config` if available)
+
+## Build
 
 ```sh
 make
@@ -26,7 +37,8 @@ make
 
 ## Scene format
 
-Whitespace-separated tokens (comments start with `#`). All values are numeric except texture type.
+Whitespace-separated tokens (comments start with `#`). All values are numeric
+except the texture type.
 
 ```
 image <width> <height>
@@ -54,7 +66,19 @@ Texture params:
 - `checker <scale> <r1> <g1> <b1> <r2> <g2> <b2>`
 - `stripe  <scale> <r1> <g1> <b1> <r2> <g2> <b2>`
 
+## Project layout
+
+- `src/asm` — NASM source files
+- `scenes` — sample scene files
+- `raytrace` — build output binary
+
 ## Notes
 
 - Output is always 8-bit RGB PNG.
 - The renderer expects reasonable numeric input (no extensive validation).
+
+## Clean
+
+```sh
+make clean
+```
