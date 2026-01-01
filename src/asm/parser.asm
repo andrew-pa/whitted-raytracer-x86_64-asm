@@ -44,10 +44,17 @@ kw_tex_checker: db "checker", 0
 kw_tex_stripe:  db "stripe", 0
 
 section .bss
-align 16
+alignb 16
 line_buf: resb 256
 _token_buf: resb 64
 _tex_buf: resb 64
+
+section .rodata
+const_f0: dq 0.0
+const_f1: dq 1.0
+const_fneg5: dq -5.0
+const_f60: dq 60.0
+const_f005: dq 0.05
 
 section .text
 
@@ -58,27 +65,43 @@ init_scene:
     mov dword [image_height], 240
     mov dword [max_depth], 3
 
-    mov qword [camera_pos + VEC3_X], __float64__(0.0)
-    mov qword [camera_pos + VEC3_Y], __float64__(1.0)
-    mov qword [camera_pos + VEC3_Z], __float64__(-5.0)
+    movsd xmm0, [rel const_f0]
+    movsd [camera_pos + VEC3_X], xmm0
+    movsd xmm0, [rel const_f1]
+    movsd [camera_pos + VEC3_Y], xmm0
+    movsd xmm0, [rel const_fneg5]
+    movsd [camera_pos + VEC3_Z], xmm0
 
-    mov qword [camera_lookat + VEC3_X], __float64__(0.0)
-    mov qword [camera_lookat + VEC3_Y], __float64__(0.0)
-    mov qword [camera_lookat + VEC3_Z], __float64__(0.0)
+    movsd xmm0, [rel const_f0]
+    movsd [camera_lookat + VEC3_X], xmm0
+    movsd xmm0, [rel const_f0]
+    movsd [camera_lookat + VEC3_Y], xmm0
+    movsd xmm0, [rel const_f0]
+    movsd [camera_lookat + VEC3_Z], xmm0
 
-    mov qword [camera_up + VEC3_X], __float64__(0.0)
-    mov qword [camera_up + VEC3_Y], __float64__(1.0)
-    mov qword [camera_up + VEC3_Z], __float64__(0.0)
+    movsd xmm0, [rel const_f0]
+    movsd [camera_up + VEC3_X], xmm0
+    movsd xmm0, [rel const_f1]
+    movsd [camera_up + VEC3_Y], xmm0
+    movsd xmm0, [rel const_f0]
+    movsd [camera_up + VEC3_Z], xmm0
 
-    mov qword [camera_fov], __float64__(60.0)
+    movsd xmm0, [rel const_f60]
+    movsd [camera_fov], xmm0
 
-    mov qword [ambient_color + VEC3_X], __float64__(0.05)
-    mov qword [ambient_color + VEC3_Y], __float64__(0.05)
-    mov qword [ambient_color + VEC3_Z], __float64__(0.05)
+    movsd xmm0, [rel const_f005]
+    movsd [ambient_color + VEC3_X], xmm0
+    movsd xmm0, [rel const_f005]
+    movsd [ambient_color + VEC3_Y], xmm0
+    movsd xmm0, [rel const_f005]
+    movsd [ambient_color + VEC3_Z], xmm0
 
-    mov qword [background_color + VEC3_X], __float64__(0.0)
-    mov qword [background_color + VEC3_Y], __float64__(0.0)
-    mov qword [background_color + VEC3_Z], __float64__(0.0)
+    movsd xmm0, [rel const_f0]
+    movsd [background_color + VEC3_X], xmm0
+    movsd xmm0, [rel const_f0]
+    movsd [background_color + VEC3_Y], xmm0
+    movsd xmm0, [rel const_f0]
+    movsd [background_color + VEC3_Z], xmm0
 
     mov dword [material_count], 0
     mov dword [object_count], 0
@@ -204,6 +227,9 @@ parse_scene:
 
 global parse_image
 parse_image:
+    push rbp
+    mov rbp, rsp
+    sub rsp, 16
     lea rdi, [rel stdin]
     mov rdi, [rdi]
     lea rsi, [rel fmt_int]
@@ -217,10 +243,14 @@ parse_image:
     lea rdx, [rel image_height]
     xor eax, eax
     call fscanf
+    leave
     ret
 
 global parse_camera
 parse_camera:
+    push rbp
+    mov rbp, rsp
+    sub rsp, 16
     lea rdi, [rel stdin]
     mov rdi, [rdi]
     lea rsi, [rel fmt_color3]
@@ -254,10 +284,14 @@ parse_camera:
     lea rdx, [rel camera_fov]
     xor eax, eax
     call fscanf
+    leave
     ret
 
 global parse_ambient
 parse_ambient:
+    push rbp
+    mov rbp, rsp
+    sub rsp, 16
     lea rdi, [rel stdin]
     mov rdi, [rdi]
     lea rsi, [rel fmt_color3]
@@ -266,10 +300,14 @@ parse_ambient:
     lea r8,  [rel ambient_color + VEC3_Z]
     xor eax, eax
     call fscanf
+    leave
     ret
 
 global parse_background
 parse_background:
+    push rbp
+    mov rbp, rsp
+    sub rsp, 16
     lea rdi, [rel stdin]
     mov rdi, [rdi]
     lea rsi, [rel fmt_color3]
@@ -278,16 +316,21 @@ parse_background:
     lea r8,  [rel background_color + VEC3_Z]
     xor eax, eax
     call fscanf
+    leave
     ret
 
 global parse_maxdepth
 parse_maxdepth:
+    push rbp
+    mov rbp, rsp
+    sub rsp, 16
     lea rdi, [rel stdin]
     mov rdi, [rdi]
     lea rsi, [rel fmt_int]
     lea rdx, [rel max_depth]
     xor eax, eax
     call fscanf
+    leave
     ret
 
 global parse_material
@@ -364,7 +407,8 @@ parse_material:
     jne .check_checker
 
     mov dword [rbx + MAT_TEX_TYPE], TEX_SOLID
-    mov qword [rbx + MAT_TEX_SCALE], __float64__(1.0)
+    movsd xmm0, [rel const_f1]
+    movsd [rbx + MAT_TEX_SCALE], xmm0
     ; Use diffuse as both texture colors
     movsd xmm0, [rbx + MAT_DIFFUSE + VEC3_X]
     movsd [rbx + MAT_TEX_COLOR1 + VEC3_X], xmm0

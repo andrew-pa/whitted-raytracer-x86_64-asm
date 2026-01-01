@@ -3,7 +3,7 @@
 default rel
 
 section .bss
-align 16
+alignb 16
 
 global materials
 materials: resb MAT_SIZE * MAX_MATERIALS
@@ -11,21 +11,21 @@ materials: resb MAT_SIZE * MAX_MATERIALS
 global material_count
 material_count: resd 1
 
-align 16
+alignb 16
 global objects
 objects: resb OBJ_SIZE * MAX_OBJECTS
 
 global object_count
 object_count: resd 1
 
-align 16
+alignb 16
 global lights
 lights: resb LIGHT_SIZE * MAX_LIGHTS
 
 global light_count
 light_count: resd 1
 
-align 16
+alignb 16
 global camera_pos
 camera_pos: resq 3
 
@@ -47,14 +47,14 @@ image_height: resd 1
 global max_depth
 max_depth: resd 1
 
-align 16
+alignb 16
 global ambient_color
 ambient_color: resq 3
 
 global background_color
 background_color: resq 3
 
-align 16
+alignb 16
 global cam_forward
 cam_forward: resq 3
 
