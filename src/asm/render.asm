@@ -71,6 +71,18 @@ render_image:
     ; rdi = buffer, rsi = width, rdx = height
     push rbp
     mov rbp, rsp
+    call compute_camera_basis
+    xor ecx, ecx
+    mov r8d, edx
+    call render_rows
+    leave
+    ret
+
+global render_rows
+render_rows:
+    ; rdi = buffer, rsi = width, rdx = height, ecx = start_y, r8d = end_y
+    push rbp
+    mov rbp, rsp
     push rbx
     push r12
     push r13
@@ -81,8 +93,8 @@ render_image:
     mov r12, rdi
     mov r13d, esi
     mov r14d, edx
-
-    call compute_camera_basis
+    mov r15d, ecx
+    mov dword [rsp + 80], r8d
 
     ; scale = tan(fov * 0.5 * deg2rad)
     movsd xmm0, [rel camera_fov]
@@ -115,9 +127,8 @@ render_image:
     imul r11d, 3
     mov dword [rsp + 64], r11d
 
-    xor r15d, r15d ; y = 0
 .y_loop:
-    cmp r15d, r14d
+    cmp r15d, dword [rsp + 80]
     jge .done
 
     ; row_base = buffer + y * row_stride

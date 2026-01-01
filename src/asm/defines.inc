@@ -57,4 +57,13 @@
 %define PNG_IMAGE_VERSION 1
 %define PNG_FORMAT_RGB 0x02
 
+%define SC_NPROCESSORS_ONLN 84
+
+%define TASK_BUF    0
+%define TASK_WIDTH  8
+%define TASK_HEIGHT 16
+%define TASK_START  24
+%define TASK_END    32
+%define TASK_SIZE   40
+
 %endif

@@ -35,6 +35,8 @@ make
 ./raytrace < scenes/sample.scene > out.png
 ```
 
+The renderer automatically uses all available CPU cores (via pthreads) by splitting the image into row ranges.
+
 ## Scene format
 
 Whitespace-separated tokens (comments start with `#`). All values are numeric

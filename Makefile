@@ -7,7 +7,7 @@ ifeq ($(PNG_LIBS),)
 PNG_LIBS := -lpng -lz
 endif
 
-LIBS := $(PNG_LIBS) -lm
+LIBS := $(PNG_LIBS) -lm -lpthread
 
 SRC := \
 	src/asm/main.asm \
@@ -18,7 +18,8 @@ SRC := \
 	src/asm/intersect.asm \
 	src/asm/shading.asm \
 	src/asm/render.asm \
-	src/asm/png.asm
+	src/asm/png.asm \
+	src/asm/threading.asm
 
 OBJ := $(SRC:src/asm/%.asm=build/%.o)
 

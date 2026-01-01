@@ -1,5 +1,5 @@
 # Stress-test scene: lots of objects/lights, higher resolution
-image 1024 768
+image 4096 3072
 camera 0 2 -10  0 0 6  0 1 0  55
 ambient 0.02 0.02 0.02
 background 0.01 0.01 0.015
