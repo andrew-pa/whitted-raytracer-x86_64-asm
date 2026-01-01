@@ -11,7 +11,7 @@ section .rodata
 const_zero: dq 0.0
 const_one: dq 1.0
 const_eps: dq 0.0001
-abs_mask: dq 0x7fffffffffffffff
+abs_mask: dq 0x7fffffffffffffff, 0x7fffffffffffffff
 
 section .text
 
