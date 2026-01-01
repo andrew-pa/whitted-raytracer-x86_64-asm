@@ -46,6 +46,7 @@ scene_intersect:
 
     mov r8, rdi
     mov r9, rsi
+    mov [rsp + 16], r9
 
     movsd [rsp + 0], xmm0   ; t_min
     movsd [rsp + 8], xmm1   ; best_t
@@ -97,8 +98,8 @@ scene_intersect:
     movsd [rsp + 8], xmm0
 
     ; copy hit record
-    mov [rsp + 16], ecx
-    mov rax, r9
+    mov [rsp + 24], ecx
+    mov rax, [rsp + 16]
     lea rsi, [rsp + 32]
     mov rcx, HIT_SIZE / 8
 .copy_loop:
@@ -107,13 +108,14 @@ scene_intersect:
     add rsi, 8
     add rax, 8
     loop .copy_loop
-    mov ecx, [rsp + 16]
+    mov ecx, [rsp + 24]
 
     ; store material index and object type
     mov eax, dword [r12 + OBJ_MAT_INDEX]
-    mov [r9 + HIT_MAT_INDEX], eax
+    mov rdx, [rsp + 16]
+    mov [rdx + HIT_MAT_INDEX], eax
     mov eax, dword [r12 + OBJ_TYPE]
-    mov [r9 + HIT_OBJ_TYPE], eax
+    mov [rdx + HIT_OBJ_TYPE], eax
 
     mov ebx, 1
 
