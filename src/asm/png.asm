@@ -26,12 +26,19 @@ write_png_stdout:
     mov r8, rdi
     mov r9d, esi
     mov r10d, edx
+    mov dword [rsp + 112], r9d
+    mov dword [rsp + 116], r10d
+    mov qword [rsp + 120], r8
 
     ; zero png_image struct
     lea rdi, [rsp]
     xor esi, esi
     mov edx, PNG_IMAGE_SIZE
     call memset
+
+    mov r9d, dword [rsp + 112]
+    mov r10d, dword [rsp + 116]
+    mov r8, qword [rsp + 120]
 
     ; fill header
     mov dword [rsp + PNG_IMAGE_VERSION_OFF], PNG_IMAGE_VERSION

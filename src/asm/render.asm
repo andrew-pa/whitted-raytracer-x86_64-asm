@@ -111,6 +111,7 @@ render_image:
     ; bytes per row = width * 3
     mov r11d, r13d
     imul r11d, 3
+    mov dword [rsp + 64], r11d
 
     xor r15d, r15d ; y = 0
 .y_loop:
@@ -119,7 +120,7 @@ render_image:
 
     ; row_base = buffer + y * row_stride
     mov eax, r15d
-    imul eax, r11d
+    imul eax, dword [rsp + 64]
     mov rbx, r12
     add rbx, rax
 
@@ -182,7 +183,8 @@ render_image:
     lea rsi, [rel camera_pos]
     call vec3_copy
 
-    ; trace ray
+    ; trace ray (save x since r10 is caller-saved)
+    mov dword [rsp + 72], r10d
     lea rdi, [rsp + 96]
     xor esi, esi
     lea rdx, [rsp + 144]
@@ -192,6 +194,7 @@ render_image:
     lea rdi, [rsp + 144]
     lea rsi, [rsp + 144]
     call vec3_clamp01
+    mov r10d, dword [rsp + 72]
 
     ; pixel_ptr = row_base + x*3
     mov eax, r10d
