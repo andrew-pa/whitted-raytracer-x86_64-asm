@@ -1,5 +1,5 @@
 # Sample scene for the assembly raytracer
-image 320 240
+image 640 480
 camera 0 1 -6  0 0 0  0 1 0  60
 ambient 0.08 0.08 0.08
 background 0.02 0.02 0.03
